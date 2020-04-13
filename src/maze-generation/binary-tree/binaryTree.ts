@@ -1,5 +1,5 @@
 import { BaseMaze } from '../baseMaze';
-import { Cell } from '../util/cell';
+import { Cell } from '../../util/cell';
 
 export class BinaryTreeMaze extends BaseMaze {
   /**
@@ -16,9 +16,7 @@ export class BinaryTreeMaze extends BaseMaze {
           cells[y][x].removeRightWall();
         } else if (x !== this.width - 1 && y !== this.height - 1) {
           // Randomly remove either the right or the top wall
-          Math.random() >= 0.5
-            ? cells[y][x].removeBottomWall()
-            : cells[y][x].removeRightWall();
+          Math.random() >= 0.5 ? cells[y][x].removeBottomWall() : cells[y][x].removeRightWall();
         }
       }
     }

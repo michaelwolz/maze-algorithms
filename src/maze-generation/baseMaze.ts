@@ -1,4 +1,5 @@
-import { Grid } from './util/grid';
+import { Grid } from '../util/grid';
+import * as p5 from 'p5';
 
 /**
  * Base class for all maze generation algorithms
@@ -13,9 +14,10 @@ export abstract class BaseMaze {
    */
   constructor(
     protected readonly width: number,
-    protected readonly height: number
+    protected readonly height: number,
+    protected readonly canvas: p5
   ) {
-    this._grid = new Grid(this.width, this.height);
+    this._grid = new Grid(this.width, this.height, canvas);
   }
 
   /**
