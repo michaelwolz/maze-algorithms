@@ -1,4 +1,5 @@
 import { Grid } from './grid';
+import * as p5 from 'p5';
 
 /**
  * Definition for CellNeighbors
@@ -78,14 +79,8 @@ export class Cell {
   public getNeighbors(): CellNeighbors {
     return {
       top: this.y > 0 ? this.grid.cells[this.y - 1][this.x] : undefined,
-      right:
-        this.x < this.grid.width - 1
-          ? this.grid.cells[this.y][this.x + 1]
-          : undefined,
-      bottom:
-        this.y < this.grid.height - 1
-          ? this.grid.cells[this.y + 1][this.x]
-          : undefined,
+      right: this.x < this.grid.width - 1 ? this.grid.cells[this.y][this.x + 1] : undefined,
+      bottom: this.y < this.grid.height - 1 ? this.grid.cells[this.y + 1][this.x] : undefined,
       left: this.x > 0 ? this.grid.cells[this.y][this.x - 1] : undefined
     };
   }
@@ -95,5 +90,33 @@ export class Cell {
    */
   public get walls(): boolean[] {
     return this._walls;
+  }
+
+  /**
+   * Draw cell on canvas
+   * @param canvas p5 object to draw the cell in
+   */
+  public show(canvas: p5): void {
+    console.log(this);
+    const width = 50;
+    if (this._walls[0])
+      canvas.line(this.x * width, this.y * width, this.x * width + width, this.y * width);
+    if (this._walls[1]) {
+      canvas.line(
+        this.x * width + width,
+        this.y * width,
+        this.x * width + width,
+        this.y * width + width
+      );
+    }
+    if (this._walls[2])
+      canvas.line(
+        this.x * width + width,
+        this.y * width + width,
+        this.x * width,
+        this.y * width + width
+      );
+    if (this._walls[3])
+      canvas.line(this.x * width, this.y * width + width, this.x * width, this.y * width);
   }
 }
