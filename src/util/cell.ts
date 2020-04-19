@@ -19,8 +19,14 @@ export class Cell {
   // Top, Right, Bottom, Left (as known from CSS)
   private _walls: boolean[] = [true, true, true, true];
 
-  // Indicates if the cell was already visited or not
+  // Cell neighbors
+  private _neighbors: CellNeighbors;
+
+  // Indicates wether the cell was already visited or not
   private visited = false;
+
+  // Indicates if the cell is currently processed
+  private _active = false;
 
   /**
    * Constructor
@@ -31,14 +37,26 @@ export class Cell {
   constructor(
     protected readonly x: number,
     protected readonly y: number,
-    protected readonly grid: Grid
+    protected readonly grid: Grid,
+    protected readonly canvas: p5
   ) {}
+
+  /**
+   * Sets cell active state
+   */
+  public set active(value: boolean) {
+    this._active = value;
+  }
 
   /**
    * Sets the visited field to true
    */
   public visit(): void {
     this.visited = true;
+  }
+
+  public get cellCoordinates(): { x: number; y: number } {
+    return { x: this.x, y: this.y };
   }
 
   /**
@@ -77,12 +95,15 @@ export class Cell {
    * Get the neighbors of the cell
    */
   public getNeighbors(): CellNeighbors {
-    return {
-      top: this.y > 0 ? this.grid.cells[this.y - 1][this.x] : undefined,
-      right: this.x < this.grid.width - 1 ? this.grid.cells[this.y][this.x + 1] : undefined,
-      bottom: this.y < this.grid.height - 1 ? this.grid.cells[this.y + 1][this.x] : undefined,
-      left: this.x > 0 ? this.grid.cells[this.y][this.x - 1] : undefined
-    };
+    if (!this._neighbors) {
+      this._neighbors = {
+        top: this.grid.getCell(this.x, this.y - 1),
+        right: this.grid.getCell(this.x + 1, this.y),
+        bottom: this.grid.getCell(this.x, this.y + 1),
+        left: this.grid.getCell(this.x - 1, this.y)
+      };
+    }
+    return this._neighbors;
   }
 
   /**
@@ -96,27 +117,24 @@ export class Cell {
    * Draw cell on canvas
    * @param canvas p5 object to draw the cell in
    */
-  public show(canvas: p5): void {
-    console.log(this);
-    const width = 50;
-    if (this._walls[0])
-      canvas.line(this.x * width, this.y * width, this.x * width + width, this.y * width);
-    if (this._walls[1]) {
-      canvas.line(
-        this.x * width + width,
-        this.y * width,
-        this.x * width + width,
-        this.y * width + width
-      );
+  public render(): void {
+    const w = this.grid.cellSize; // cell width
+
+    // draw walls
+    if (this._walls[0]) this.canvas.line(this.x * w, this.y * w, this.x * w + w, this.y * w);
+    if (this._walls[1]) this.canvas.line(this.x * w + w, this.y * w, this.x * w + w, this.y * w + w);
+    if (this._walls[2]) this.canvas.line(this.x * w + w, this.y * w + w, this.x * w, this.y * w + w);
+    if (this._walls[3]) this.canvas.line(this.x * w, this.y * w + w, this.x * w, this.y * w);
+
+    // fill cell based on it's status
+    this.canvas.noStroke();
+    if (this._active) {
+      this.canvas.fill(0, 255, 0);
+      this.canvas.rect(this.x * w, this.y * w, w, w);
+    } else if (this.visited) {
+      this.canvas.fill(105, 35, 139);
+      this.canvas.circle(this.x * w + w / 2, this.y * w + w / 2, 5);
     }
-    if (this._walls[2])
-      canvas.line(
-        this.x * width + width,
-        this.y * width + width,
-        this.x * width,
-        this.y * width + width
-      );
-    if (this._walls[3])
-      canvas.line(this.x * width, this.y * width + width, this.x * width, this.y * width);
+    this.canvas.stroke(255, 255, 255);
   }
 }

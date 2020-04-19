@@ -7,20 +7,15 @@ const sketch = (s: p5): void => {
 
   s.setup = (): void => {
     s.createCanvas(s.windowWidth, s.windowHeight);
-    s.frameRate(5);
-
-    maze = new BinaryTreeMaze(10, 10, s);
-    maze.generateMaze();
+    s.frameRate(20);
+    s.background(0);
+    s.stroke(255, 255, 255);
+    s.strokeWeight(1);
+    maze = new BinaryTreeMaze(20, 20, 30, s);
   };
 
   s.draw = (): void => {
-    s.background(0);
-    s.stroke(69, 245, 66);
-    for (const y of maze.grid.cells) {
-      for (const x of y) {
-        x.show(s);
-      }
-    }
+    maze.generateMazeStepByStep();
   };
 };
 
