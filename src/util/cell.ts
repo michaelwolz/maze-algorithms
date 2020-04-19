@@ -5,10 +5,10 @@ import * as p5 from 'p5';
  * Definition for CellNeighbors
  */
 export interface CellNeighbors {
-  top: Cell | undefined;
-  right: Cell | undefined;
-  bottom: Cell | undefined;
-  left: Cell | undefined;
+  top?: Cell;
+  right?: Cell;
+  bottom?: Cell;
+  left?: Cell;
 }
 
 /**

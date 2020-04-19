@@ -5,8 +5,8 @@ import { RecursiveBacktrackerMaze } from './maze-generation/recursive-backtracke
 
 const sketch = (s: p5): void => {
   let maze: BaseMaze;
-  const mazeWidth = 10;
-  const mazeHeight = 10;
+  const mazeWidth = 30;
+  const mazeHeight = 30;
   const cellSize = 30;
 
   s.setup = (): void => {

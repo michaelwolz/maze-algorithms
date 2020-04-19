@@ -1,5 +1,5 @@
 import { BaseMaze } from '../baseMaze';
-import { Cell } from '../../util/cell';
+import { Cell, CellNeighbors } from '../../util/cell';
 import * as p5 from 'p5';
 
 export class RecursiveBacktrackerMaze extends BaseMaze {
@@ -29,47 +29,36 @@ export class RecursiveBacktrackerMaze extends BaseMaze {
   public generateMazeStepByStep(): void {
     if (this.cellStack.length > 0) {
       // 1. Pop a cell from the stack and make it a current cell
-      const cell: Cell = this.cellStack.pop();
-      cell.visit();
-      cell.active = true;
+      const current: Cell = this.cellStack.pop();
+      current.visit();
+      current.active = true;
 
       // 2. If the current cell has any neighbors which have not been visited
-      const neighborIds: string[] = Object.keys(cell.getNeighbors()).filter((neighbor) => {
-        const neighborObj = cell.getNeighbors() as any;
-        return neighborObj[neighbor] && !neighborObj[neighbor].visited;
-      });
+      const cellNeighborKeys = Object.keys(current.getNeighbors()).filter(
+        (neighbor: keyof CellNeighbors) => current.getNeighbors()[neighbor] && !current.getNeighbors()[neighbor].visited
+      ) as (keyof CellNeighbors)[];
 
-      if (neighborIds.length > 0) {
+      if (cellNeighborKeys.length > 0) {
         // 2.1 Push the current cell to the stack
-        this.cellStack.push(cell);
+        this.cellStack.push(current);
 
         // 2.2 Choose one of the unvisited neighbors
-        const randNeighborId: string = neighborIds[Math.floor(Math.random() * neighborIds.length)];
-        const randNeighbor: Cell = (cell.getNeighbors() as any)[randNeighborId];
+        const nextPos = cellNeighborKeys[Math.floor(Math.random() * cellNeighborKeys.length)];
+        const next: Cell = current.getNeighbors()[nextPos];
 
         // 2.3 Remove the wall between the current cell and the chosen cell
-        switch (randNeighborId) {
-          case 'top':
-            cell.removeTopWall();
-            break;
-          case 'right':
-            cell.removeRightWall();
-            break;
-          case 'bottom':
-            cell.removeBottomWall();
-            break;
-          case 'left':
-            cell.removeLeftWall();
-            break;
-        }
+        if (nextPos === 'top') current.removeTopWall();
+        if (nextPos === 'right') current.removeRightWall();
+        if (nextPos === 'bottom') current.removeBottomWall();
+        if (nextPos === 'left') current.removeLeftWall();
 
         // 2.4 Mark the chosen cell as visited and push it to the stack
-        this.cellStack.push(randNeighbor);
+        this.cellStack.push(next);
       }
 
       // render the maze & reset cell active state
       this.renderMaze();
-      cell.active = false;
+      current.active = false;
     }
   }
 }
