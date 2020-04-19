@@ -6,8 +6,6 @@ import * as p5 from 'p5';
  */
 export abstract class BaseMaze {
   protected _grid: Grid;
-  protected _currentCellIndex = 0;
-  protected ready = false;
 
   /**
    * Constructor

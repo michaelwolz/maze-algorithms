@@ -4,7 +4,7 @@ import * as p5 from 'p5';
 /**
  * Definition for CellNeighbors
  */
-interface CellNeighbors {
+export interface CellNeighbors {
   top: Cell | undefined;
   right: Cell | undefined;
   bottom: Cell | undefined;
@@ -23,7 +23,7 @@ export class Cell {
   private _neighbors: CellNeighbors;
 
   // Indicates wether the cell was already visited or not
-  private visited = false;
+  private _visited = false;
 
   // Indicates if the cell is currently processed
   private _active = false;
@@ -52,7 +52,14 @@ export class Cell {
    * Sets the visited field to true
    */
   public visit(): void {
-    this.visited = true;
+    this._visited = true;
+  }
+
+  /**
+   * Get visited field
+   */
+  public get visited(): boolean {
+    return this._visited;
   }
 
   public get cellCoordinates(): { x: number; y: number } {
@@ -129,7 +136,7 @@ export class Cell {
     if (this._active) {
       this.canvas.fill(0, 255, 0);
       this.canvas.rect(this.x * w, this.y * w, w, w);
-    } else if (this.visited) {
+    } else if (this._visited) {
       this.canvas.fill(105, 35, 139);
       this.canvas.circle(this.x * w + w / 2, this.y * w + w / 2, 5);
     }

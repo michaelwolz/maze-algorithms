@@ -2,6 +2,9 @@ import { BaseMaze } from '../baseMaze';
 import { Cell } from '../../util/cell';
 
 export class BinaryTreeMaze extends BaseMaze {
+  protected currentCellIndex = 0;
+  protected ready = false;
+
   /**
    * Generate a maze using the binary tree algorithm
    */
@@ -24,7 +27,7 @@ export class BinaryTreeMaze extends BaseMaze {
 
   public generateMazeStepByStep(): void {
     if (!this.ready) {
-      const cell: Cell = this.grid.cells[this._currentCellIndex];
+      const cell: Cell = this.grid.cells[this.currentCellIndex];
       const { x, y } = cell.cellCoordinates;
 
       // visit cell and set state to active
@@ -47,8 +50,8 @@ export class BinaryTreeMaze extends BaseMaze {
       cell.active = false;
 
       // increment index to process next cell
-      this._currentCellIndex++;
-      if (this._currentCellIndex === this.grid.cells.length) {
+      this.currentCellIndex++;
+      if (this.currentCellIndex === this.grid.cells.length) {
         this.ready = true;
       }
     }

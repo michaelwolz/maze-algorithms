@@ -1,11 +1,12 @@
 import * as p5 from 'p5';
 import { BinaryTreeMaze } from './maze-generation/binary-tree/binaryTree';
 import { BaseMaze } from './maze-generation/baseMaze';
+import { RecursiveBacktrackerMaze } from './maze-generation/recursive-backtracker/recursiveBacktracker';
 
 const sketch = (s: p5): void => {
   let maze: BaseMaze;
-  const mazeWidth = 20;
-  const mazeHeight = 20;
+  const mazeWidth = 10;
+  const mazeHeight = 10;
   const cellSize = 30;
 
   s.setup = (): void => {
@@ -15,7 +16,8 @@ const sketch = (s: p5): void => {
     s.stroke(255, 255, 255);
     s.strokeWeight(2);
 
-    maze = new BinaryTreeMaze(mazeWidth, mazeHeight, cellSize, s);
+    // maze = new BinaryTreeMaze(mazeWidth, mazeHeight, cellSize, s);
+    maze = new RecursiveBacktrackerMaze(mazeWidth, mazeHeight, cellSize, s);
   };
 
   s.draw = (): void => {
