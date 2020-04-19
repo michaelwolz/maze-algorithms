@@ -9,6 +9,8 @@ export class Grid {
    * Constructor
    * @param width width of the grid (number of cells)
    * @param height height of the grid (number of cells)
+   * @param cellSize - size of one cell element in pixels
+   * @param canvas - p5 canvas element to draw the maze on
    */
   constructor(
     public readonly width: number,

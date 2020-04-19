@@ -16,8 +16,8 @@ interface CellNeighbors {
  */
 export class Cell {
   // Walls of the cell object
-  // Top, Right, Bottom, Left (as known from CSS)
-  private _walls: boolean[] = [true, true, true, true];
+  // Right, Bottom
+  private _walls: boolean[] = [true, true];
 
   // Cell neighbors
   private _neighbors: CellNeighbors;
@@ -60,35 +60,31 @@ export class Cell {
   }
 
   /**
-   * Remove the top wall of a cell
+   * Remove the top wall of a cell via bottom wall of the top neighbor cell
    */
-  public removeTopWall(includeNeighbor = true): void {
-    this._walls[0] = false;
-    if (includeNeighbor) this.getNeighbors().top?.removeBottomWall(false);
+  public removeTopWall(): void {
+    this.getNeighbors().top?.removeBottomWall();
   }
 
   /**
    * Remove the right wall of a cell
    */
-  public removeRightWall(includeNeighbor = true): void {
-    this._walls[1] = false;
-    if (includeNeighbor) this.getNeighbors().right?.removeLeftWall(false);
+  public removeRightWall(): void {
+    this._walls[0] = false;
   }
 
   /**
    * Remove the bottom wall of a cell
    */
-  public removeBottomWall(includeNeighbor = true): void {
-    this._walls[2] = false;
-    if (includeNeighbor) this.getNeighbors().bottom?.removeTopWall(false);
+  public removeBottomWall(): void {
+    this._walls[1] = false;
   }
 
   /**
-   * Remove the left wall of a cell
+   * Remove the left wall of a cell via right wall of the left neighbor cell
    */
-  public removeLeftWall(includeNeighbor = true): void {
-    this._walls[3] = false;
-    if (includeNeighbor) this.getNeighbors().bottom?.removeLeftWall(false);
+  public removeLeftWall(): void {
+    this.getNeighbors().left?.removeRightWall();
   }
 
   /**
@@ -121,10 +117,12 @@ export class Cell {
     const w = this.grid.cellSize; // cell width
 
     // draw walls
-    if (this._walls[0]) this.canvas.line(this.x * w, this.y * w, this.x * w + w, this.y * w);
-    if (this._walls[1]) this.canvas.line(this.x * w + w, this.y * w, this.x * w + w, this.y * w + w);
-    if (this._walls[2]) this.canvas.line(this.x * w + w, this.y * w + w, this.x * w, this.y * w + w);
-    if (this._walls[3]) this.canvas.line(this.x * w, this.y * w + w, this.x * w, this.y * w);
+    if (this._walls[0]) this.canvas.line(this.x * w + w, this.y * w, this.x * w + w, this.y * w + w);
+    if (this._walls[1]) this.canvas.line(this.x * w + w, this.y * w + w, this.x * w, this.y * w + w);
+
+    // draw top and left line if current cell is on the left or top edge
+    if (this.x === 0) this.canvas.line(this.x * w, this.y * w + w, this.x * w, this.y * w); // left
+    if (this.y === 0) this.canvas.line(this.x * w, this.y * w, this.x * w + w, this.y * w); // top
 
     // fill cell based on it's status
     this.canvas.noStroke();
